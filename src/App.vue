@@ -1,47 +1,79 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div>
+    <h1>Calculadora Vue</h1>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    <label for="primeiroNumero">Primeiro Número:</label>
+    <input type="number" v-model="primeiroNumero" id="primeiroNumero" @input="recalcularResultado">
 
-  <main>
-    <TheWelcome />
-  </main>
+    <label for="operacao">Operação:</label>
+    <select v-model="operacao" id="operacao" @change="recalcularResultado">
+      <option value="soma">+</option>
+      <option value="subtracao">-</option>
+      <option value="multiplicacao">*</option>
+      <option value="divisao">/</option>
+    </select>
+
+    <label for="segundoNumero">Segundo Número:</label>
+    <input type="number" v-model="segundoNumero" id="segundoNumero" @input="recalcularResultado">
+
+    <p>Resultado: {{ resultado }}</p>
+  </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      primeiroNumero: 0,
+      operacao: 'soma',
+      segundoNumero: 0,
+    };
+  },
+  computed: {
+    resultado() {
+      return this.calcularResultado();
+    },
+  },
+  methods: {
+    calcularResultado() {
+      const num1 = parseFloat(this.primeiroNumero);
+      const num2 = parseFloat(this.segundoNumero);
+
+      switch (this.operacao) {
+        case 'soma':
+          return num1 + num2;
+        case 'subtracao':
+          return num1 - num2;
+        case 'multiplicacao':
+          return num1 * num2;
+        case 'divisao':
+          return num2 !== 0 ? num1 / num2 : 'Não é possível dividir por zero';
+        default:
+          return 'Operação inválida';
+      }
+    },
+    recalcularResultado() {
+      this.$forceUpdate(); // Força a atualização da visualização
+    },
+  },
+};
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+/* Adicione estilos específicos para este componente */
+div {
+  background-color: #f0f0f0;
+  padding: 20px;
+  margin: 20px 0;
 }
 
-.logo {
+label {
   display: block;
-  margin: 0 auto 2rem;
+  margin-bottom: 5px;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+input,
+select {
+  margin-bottom: 10px;
 }
 </style>
